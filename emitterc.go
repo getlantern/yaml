@@ -809,7 +809,7 @@ func yaml_emitter_select_scalar_style(emitter *yaml_emitter_t, event *yaml_event
 	if emitter.canonical {
 		style = yaml_DOUBLE_QUOTED_SCALAR_STYLE
 	}
-	if emitter.simple_key_context && emitter.scalar_data.multiline {
+	if (emitter.simple_key_context || emitter.mapping_context) && emitter.scalar_data.multiline {
 		style = yaml_DOUBLE_QUOTED_SCALAR_STYLE
 	}
 
