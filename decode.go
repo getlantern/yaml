@@ -14,6 +14,10 @@ const (
 	aliasNode
 )
 
+var (
+	ZERO_VALUE = reflect.Value{}
+)
+
 type node struct {
 	kind         int
 	line, column int
@@ -465,7 +469,19 @@ func (d *decoder) mapping(n *node, out reflect.Value) (good bool) {
 		}
 		k := reflect.New(kt).Elem()
 		if d.unmarshal(n.children[i], k) {
-			e := reflect.New(et).Elem()
+			var e reflect.Value
+			if et.Kind() == reflect.Ptr {
+				elemKind := et.Elem().Kind()
+				if elemKind == reflect.Struct || elemKind == reflect.Map {
+					// If we're dealing with a pointer to a struct or map, use
+					// the existing value
+					e = out.MapIndex(k)
+				}
+			}
+			if e == ZERO_VALUE {
+				// Create a new value
+				e = reflect.New(et).Elem()
+			}
 			if d.unmarshal(n.children[i+1], e) {
 				out.SetMapIndex(k, e)
 			}
@@ -516,7 +532,7 @@ func (d *decoder) merge(n *node, out reflect.Value) {
 		d.unmarshal(n, out)
 	case sequenceNode:
 		// Step backwards as earlier nodes take precedence.
-		for i := len(n.children)-1; i >= 0; i-- {
+		for i := len(n.children) - 1; i >= 0; i-- {
 			ni := n.children[i]
 			if ni.kind == aliasNode {
 				an, ok := d.doc.anchors[ni.value]
