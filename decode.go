@@ -672,7 +672,19 @@ func (d *decoder) mapping(n *node, out reflect.Value) (good bool) {
 			if kkind == reflect.Map || kkind == reflect.Slice {
 				failf("invalid map key: %#v", k.Interface())
 			}
-			e := reflect.New(et).Elem()
+			var e reflect.Value
+			if et.Kind() == reflect.Ptr {
+				elemKind := et.Elem().Kind()
+				if elemKind == reflect.Struct || elemKind == reflect.Map {
+					// If we're dealing with a pointer to a struct or map, use
+					// the existing value
+					e = out.MapIndex(k)
+				}
+			}
+			if e == zeroValue {
+				// Create a new value
+				e = reflect.New(et).Elem()
+			}
 			if d.unmarshal(n.children[i+1], e) {
 				d.setMapIndex(n.children[i+1], out, k, e)
 			}
