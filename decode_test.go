@@ -1,11 +1,12 @@
 package yaml_test
 
 import (
-	. "gopkg.in/check.v1"
-	"gopkg.in/getlantern/yaml.v1"
 	"math"
 	"reflect"
 	"time"
+
+	"github.com/getlantern/yaml"
+	. "gopkg.in/check.v1"
 )
 
 var unmarshalIntTest = 123

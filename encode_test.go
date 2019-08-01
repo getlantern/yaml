@@ -2,12 +2,13 @@ package yaml_test
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v1"
-	. "gopkg.in/check.v1"
 	"math"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/getlantern/yaml"
+	. "gopkg.in/check.v1"
 )
 
 var marshalIntTest = 123
@@ -220,7 +221,7 @@ var marshalTests = []struct {
 		"a: 3s\n",
 	},
 
-	// Issue #24. 
+	// Issue #24.
 	{
 		map[string]string{"a": "<foo>"},
 		"a: <foo>\n",
