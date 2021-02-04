@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
+        "github.com/getlantern/yaml/v2"
 	. "gopkg.in/check.v1"
-	"gopkg.in/yaml.v2"
 )
 
 var unmarshalIntTest = 123
